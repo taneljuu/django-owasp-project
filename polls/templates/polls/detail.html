@@ -1,0 +1,31 @@
+<h1>{{ question.question_text }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'polls:vote' question.id %}" method="post">
+
+<!-- FIX 
+{% csrf_token %}
+-->
+
+{% for choice in question.choice_set.all %}
+    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+{% endfor %}
+<input type="submit" value="Vote">
+</form>
+
+<h2>Comments</h2>
+<ul>
+{% for c in question.comment_set.all %}
+    <li>{{ c.text|safe }}</li>  <!-- FIX: {{ c.text|escape }} -->
+{% empty %}
+    <li>No comments yet</li>
+{% endfor %}
+</ul>
+
+<form action="{% url 'polls:add_comment' question.id %}" method="post">
+    <!-- FIX: {% csrf_token %} -->
+    <textarea name="text"></textarea>
+    <button type="submit">Add comment</button>
+</form>

