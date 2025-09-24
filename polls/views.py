@@ -6,6 +6,7 @@ from django.views import generic
 from django.db import connection
 from django.http import HttpResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
+import bleach
 
 from .models import Choice, Question, Comment
 
@@ -58,7 +59,7 @@ def search_questions(request):
     results = [{"id": r[0], "question_text": r[1]} for r in rows]
     return render(request, "polls/search_results.html", {"results": results, "query": q})
 
-# FIX 
+# FIX for sql-injection vulnerability
 """def search_questions(request):
     q = request.GET.get("q", "").strip()    
     if q:
@@ -69,9 +70,9 @@ def search_questions(request):
 
 
 def reset_votes(request):
-    # FIX: very basic "auth" check 
-    if request.GET.get("key") != "secret123":
-        return HttpResponseForbidden("Forbidden")
+    # FIX for broken access control: very basic "auth" check 
+    """if request.GET.get("key") != "secret123":
+        return HttpResponseForbidden("Forbidden")"""
     
     Choice.objects.all().update(votes=0)
     return HttpResponse("All votes have been reset!")
@@ -80,8 +81,6 @@ def crash(request):
     1 / 0
 
 @csrf_exempt
-# FIX 
-#@csrf_protect
 def add_comment(request, question_id):
     if request.method == "POST":
         Comment.objects.create(
@@ -89,3 +88,17 @@ def add_comment(request, question_id):
             text=request.POST["text"]  
         )
         return redirect("polls:detail", pk=question_id)
+    
+"""
+# FIX for XSS-vulnerability
+@csrf_exempt
+def add_comment(request, question_id):
+    if request.method == "POST":
+        cleaned_text = bleach.clean(request.POST["text"])
+        Comment.objects.create(
+            question_id=question_id,
+            text=cleaned_text  
+        )
+        return redirect("polls:detail", pk=question_id)"""
+
+

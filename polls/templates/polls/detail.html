@@ -5,7 +5,7 @@
 <form action="{% url 'polls:vote' question.id %}" method="post">
 
 <!-- FIX 
-{% csrf_token %}
+ {% csrf_token %}
 -->
 
 {% for choice in question.choice_set.all %}
