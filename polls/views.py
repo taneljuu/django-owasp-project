@@ -51,11 +51,10 @@ def vote(request, question_id):
 
 def search_questions(request):
     q = request.GET.get("q", "")
-    # SQL-injection vulnerability Only%' OR 1=1 --
+    # SQL-injection vulnerability 
     with connection.cursor() as cursor:
         cursor.execute(f"SELECT id, question_text FROM polls_question WHERE question_text LIKE '%{q}%'")
         rows = cursor.fetchall()
-    # Muutetaan tuple-lista Question-tyyppiseksi listaksi templatea varten
     results = [{"id": r[0], "question_text": r[1]} for r in rows]
     return render(request, "polls/search_results.html", {"results": results, "query": q})
 
@@ -87,6 +86,6 @@ def add_comment(request, question_id):
     if request.method == "POST":
         Comment.objects.create(
             question_id=question_id,
-            text=request.POST["text"]  # FIX: ei validoida / escapeta
+            text=request.POST["text"]  
         )
         return redirect("polls:detail", pk=question_id)
