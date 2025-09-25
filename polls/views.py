@@ -71,7 +71,7 @@ def search_questions(request):
 
 def reset_votes(request):
     # FIX for broken access control: very basic "auth" check 
-    """if request.GET.get("key") != "secret123":
+    """if request.GET.get("key")!="secret123":
         return HttpResponseForbidden("Forbidden")"""
     
     Choice.objects.all().update(votes=0)
